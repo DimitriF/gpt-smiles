@@ -1,0 +1,77 @@
+---
+title: "20201207_DF_ZINC_EDA_meta"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(magrittr)
+```
+
+
+
+```{r}
+wc= read.csv('~/perso/wc.txt', sep='/', header = F)
+wc$V1 = wc$V1 %>% gsub('.','',., fixed = T) %>% as.numeric()
+wc = wc[order(wc$V1,decreasing = T),]
+wc
+# wc = data.frame(V2=dir('~/perso/raw'))
+```
+
+
+```{r}
+# tail -n +2 CDAD.txt | split -l 10000000 - CDAD --filter='sh -c "{ head -n1 CDAD.txt; cat; } > $FILE"'
+n = 1000000
+merged_id = 0
+# for(i in 0:182){
+  print(i)
+  df = read.csv(paste0('~/perso/merged/',i,'.txt'))
+  while(nrow(df) > n){
+      df1 = df[1:n,]
+      df = df[(n+1):nrow(df),]
+      write.csv(df1, file = paste0('~/perso/merged_1m/',merged_id,'.txt'), row.names = F)
+      merged_id = merged_id + 1
+  }
+  if(nrow(df) != 0){
+    write.csv(df, file = paste0('~/perso/merged_1m/',merged_id,'.txt'), row.names = F)
+      merged_id = merged_id + 1
+  }
+}
+
+```
+
+```{r}
+# dir.create('~/perso/merged',showWarnings = F)
+# merged_id = 182
+# wc_id = 996
+# 
+# n = 5000000
+# 
+# df = data.frame()
+# while(wc_id < nrow(wc)){
+#   while(nrow(df) < n){
+#     wc_id = wc_id + 1
+#     df = rbind(df, read.csv(paste0('~/perso/raw/', wc$V2[wc_id]), sep = ','))
+#     print('wc_id')
+#     print(wc_id)
+#     print(nrow(df))
+#     while(nrow(df) > n){
+#       df1 = df[1:n,]
+#       df = df[(n+1):nrow(df),]
+#       write.csv(df1, file = paste0('~/perso/merged/',merged_id,'.txt'), row.names = F)
+#       print('saving n samples')
+#       print(nrow(df1))
+#       print(nrow(df))
+#       merged_id = merged_id + 1
+#     }
+#   }
+#   write.csv(df, file = paste0('~/perso/merged/',merged_id,'.txt'), row.names = F)
+#   df = data.frame()
+#   merged_id = merged_id + 1
+#   
+#   print('merged_id')
+#   print(merged_id)
+# }
+
+
+```
